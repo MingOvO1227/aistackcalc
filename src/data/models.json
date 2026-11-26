@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-26T03:56:16.971Z",
+  "updatedAt": "2026-11-26T11:04:53.976Z",
   "source": "OpenRouter Public Pricing API",
   "totalRawModels": 474,
   "models": [
@@ -618,9 +618,9 @@
       "providerKey": "qwen",
       "provider": "Qwen",
       "openWeight": true,
-      "inputPerM": 0.035,
-      "outputPerM": 1.5,
-      "blendedPerM": 0.401,
+      "inputPerM": 0.06,
+      "outputPerM": 1.96,
+      "blendedPerM": 0.535,
       "contextLength": 1024000,
       "tier": "budget",
       "created": 1786722910,
