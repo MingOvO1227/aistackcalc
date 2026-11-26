@@ -1,0 +1,14 @@
+---
+import ModelDetailView from '../../components/ModelDetailView.astro';
+import modelsData from '../../data/models.json';
+
+export function getStaticPaths() {
+  return modelsData.models.map((model) => ({
+    params: { slug: model.slug },
+    props: { model }
+  }));
+}
+
+const { model } = Astro.props;
+---
+<ModelDetailView locale="en" model={model} />

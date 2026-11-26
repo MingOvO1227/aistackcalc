@@ -1,0 +1,75 @@
+{
+  "_instructions": "上线并注册 PartnerStack 后，只需要把下面每个工具的 url 替换成你的专属推广链接（Affiliate Link）即可。修改保存并推送到 GitHub 后，全站按钮会自动更新。",
+  "partners": {
+    "elevenlabs": {
+      "name": "ElevenLabs",
+      "category": "AI Voice & Dubbing",
+      "commissionNote": "PartnerStack · 22% recurring (12 mo) · PayPal payout",
+      "badge": "Best AI Voice",
+      "highlight": "Cut voiceover & dubbing costs by 90% vs studio talent",
+      "ctaText": "Try ElevenLabs Free",
+      "url": "https://elevenlabs.io/?ref=YOUR_PARTNERSTACK_ID",
+      "startingPrice": "$5/mo"
+    },
+    "runpod": {
+      "name": "RunPod",
+      "category": "Cloud GPU Hosting",
+      "commissionNote": "PartnerStack · Recurring Cloud GPU spend · PayPal payout",
+      "badge": "Best Cloud GPU",
+      "highlight": "Rent H100 / A100 / L40S GPUs per second to self-host open LLMs",
+      "ctaText": "Deploy GPU on RunPod",
+      "url": "https://www.runpod.io/?ref=YOUR_PARTNERSTACK_ID",
+      "startingPrice": "$0.20/hr"
+    },
+    "webflow": {
+      "name": "Webflow",
+      "category": "AI Web Builder",
+      "commissionNote": "PartnerStack · 50% first year · PayPal payout",
+      "badge": "Top AI Site Builder",
+      "highlight": "Launch high-converting AI product sites without engineering bottlenecks",
+      "ctaText": "Start Free on Webflow",
+      "url": "https://webflow.com/?ref=YOUR_PARTNERSTACK_ID",
+      "startingPrice": "$14/mo"
+    },
+    "notion": {
+      "name": "Notion AI",
+      "category": "AI Workspace",
+      "commissionNote": "PartnerStack · 20% recurring (12 mo) · PayPal payout",
+      "badge": "All-in-One AI Hub",
+      "highlight": "Replace multiple AI writing, wiki & project tools in one workspace",
+      "ctaText": "Try Notion AI Free",
+      "url": "https://www.notion.so/?ref=YOUR_PARTNERSTACK_ID",
+      "startingPrice": "$10/mo"
+    },
+    "zapier": {
+      "name": "Zapier AI",
+      "category": "AI Automation",
+      "commissionNote": "PartnerStack · High CPA on paid upgrades · PayPal payout",
+      "badge": "7,000+ Integrations",
+      "highlight": "Connect LLMs to CRM, Slack, Gmail & Sheets with zero code",
+      "ctaText": "Automate Free with Zapier",
+      "url": "https://zapier.com/?ref=YOUR_PARTNERSTACK_ID",
+      "startingPrice": "$19.99/mo"
+    },
+    "activecampaign": {
+      "name": "ActiveCampaign",
+      "category": "AI Email Automation",
+      "commissionNote": "PartnerStack · 20%-30% recurring · PayPal payout",
+      "badge": "High ROI Email",
+      "highlight": "Automated AI email funnels that convert free tool users into buyers",
+      "ctaText": "Start Free Trial",
+      "url": "https://www.activecampaign.com/?ref=YOUR_PARTNERSTACK_ID",
+      "startingPrice": "$15/mo"
+    },
+    "glide": {
+      "name": "Glide",
+      "category": "No-Code AI Apps",
+      "commissionNote": "PartnerStack · 20% recurring · PayPal payout",
+      "badge": "No-Code AI Apps",
+      "highlight": "Turn spreadsheets & databases into custom AI internal tools in minutes",
+      "ctaText": "Build Free on Glide",
+      "url": "https://www.glideapps.com/?ref=YOUR_PARTNERSTACK_ID",
+      "startingPrice": "$25/mo"
+    }
+  }
+}

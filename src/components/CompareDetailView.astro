@@ -1,0 +1,158 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AffiliateBanner from './AffiliateBanner.astro';
+import { TRANSLATIONS, localePath, type Locale } from '../i18n/translations';
+import { formatContext } from '../utils/format';
+
+interface ModelItem {
+  id: string;
+  slug: string;
+  name: string;
+  providerKey: string;
+  provider: string;
+  openWeight: boolean;
+  inputPerM: number;
+  outputPerM: number;
+  blendedPerM: number;
+  contextLength: number;
+  tier: string;
+  description: string;
+}
+
+interface Props {
+  locale: Locale;
+  a: ModelItem;
+  b: ModelItem;
+}
+
+const { locale, a, b } = Astro.props;
+const t = TRANSLATIONS[locale].compare;
+const navT = TRANSLATIONS[locale].nav;
+
+const isTie = Math.abs(a.blendedPerM - b.blendedPerM) < 0.0001;
+const cheaper = a.blendedPerM <= b.blendedPerM ? a : b;
+const pricier = a.blendedPerM <= b.blendedPerM ? b : a;
+const diffPct = !isTie && pricier.blendedPerM > 0
+  ? Math.round((1 - cheaper.blendedPerM / pricier.blendedPerM) * 100)
+  : 0;
+
+const pairSlug = `${a.slug}-vs-${b.slug}`;
+const title = `${a.name} vs ${b.name} · ${t.pageTitle}`;
+const description = isTie
+  ? `${a.provider} ${a.name} ($${a.inputPerM}/$${a.outputPerM}) vs ${b.provider} ${b.name} ($${b.inputPerM}/$${b.outputPerM}) — ${t.priceTieBadge}.`
+  : `${a.provider} ${a.name} ($${a.inputPerM}/$${a.outputPerM}) vs ${b.provider} ${b.name} ($${b.inputPerM}/$${b.outputPerM}) — ${cheaper.name} (${diffPct}% ${t.lowerBlended}).`;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  locale={locale}
+  canonicalPath={localePath(locale, `compare/${pairSlug}/`)}
+  multilingualPath={`compare/${pairSlug}/`}
+>
+  <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-10">
+    <nav class="text-xs font-medium text-slate-500 mb-6 flex items-center gap-2 flex-wrap">
+      <a href={localePath(locale)} class="hover:text-indigo-600">{t.homeCrumb}</a>
+      <span>/</span>
+      <a href={localePath(locale, 'compare/')} class="hover:text-indigo-600">{navT.compare}</a>
+      <span>/</span>
+      <span class="text-slate-900 font-semibold">{a.name} vs {b.name}</span>
+    </nav>
+
+    <div class="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
+      {isTie ? (
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 border border-indigo-200 px-3 py-1 text-xs font-bold text-indigo-700">
+          {t.priceTieBadge}
+        </span>
+      ) : (
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-bold text-emerald-700">
+          {t.costWinner}: {cheaper.name} ({diffPct}% {t.lowerBlended})
+        </span>
+      )}
+      <h1 class="mt-4 text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+        {a.name} vs {b.name}
+      </h1>
+      <p class="mt-2 text-slate-600">{description}</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8">
+        {[a, b].map((m) => (
+          <div class={`rounded-2xl border-2 p-6 ${!isTie && m.slug === cheaper.slug ? 'border-emerald-400 bg-emerald-50/30' : 'border-slate-200 bg-slate-50/50'}`}>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">{m.provider}</span>
+              {!isTie && m.slug === cheaper.slug && (
+                <span class="text-xs font-bold bg-emerald-600 text-white px-2.5 py-0.5 rounded-full">{t.cheaperOption}</span>
+              )}
+              {isTie && (
+                <span class="text-xs font-bold bg-indigo-100 text-indigo-700 px-2.5 py-0.5 rounded-full">{t.samePriceTag}</span>
+              )}
+            </div>
+            <h2 class="mt-2 text-xl font-extrabold text-slate-900">
+              <a href={localePath(locale, `models/${m.slug}/`)} class="hover:text-indigo-600">{m.name}</a>
+            </h2>
+            <dl class="mt-4 space-y-2 text-sm">
+              <div class="flex justify-between">
+                <dt class="text-slate-500">{t.inputPerM}</dt>
+                <dd class="font-bold text-slate-900 tabular-nums">${m.inputPerM}</dd>
+              </div>
+              <div class="flex justify-between">
+                <dt class="text-slate-500">{t.outputPerM}</dt>
+                <dd class="font-bold text-slate-900 tabular-nums">${m.outputPerM}</dd>
+              </div>
+              <div class="flex justify-between">
+                <dt class="text-slate-500">{t.contextWindow}</dt>
+                <dd class="font-bold text-slate-900 tabular-nums">{formatContext(m.contextLength)}</dd>
+              </div>
+              <div class="flex justify-between pt-2 border-t border-slate-200">
+                <dt class="text-slate-600 font-semibold">{t.estMonthlyBill}</dt>
+                <dd id={`cmp-bill-${m.slug === a.slug ? 'a' : 'b'}`} class="text-lg font-extrabold text-indigo-700 tabular-nums">$0.00</dd>
+              </div>
+            </dl>
+          </div>
+        ))}
+      </div>
+
+      <div class="mt-6 rounded-2xl bg-slate-900 text-white p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex-1">
+            <div class="flex justify-between text-xs text-slate-300 font-semibold mb-2">
+              <label for="cmp-reqs">{t.adjustReqs}</label>
+              <span id="cmp-reqs-val" class="text-indigo-300 font-bold tabular-nums">100,000</span>
+            </div>
+            <input id="cmp-reqs" type="range" min="5000" max="2000000" step="5000" value="100000" class="w-full" />
+          </div>
+          <div class="sm:text-right shrink-0">
+            <div class="text-xs text-slate-400">
+              {isTie ? t.priceTieBadge : `${t.annualSavingsWith} ${cheaper.name}`}
+            </div>
+            <div id="cmp-save-yr" class="text-2xl font-extrabold text-emerald-400 tabular-nums">$0/yr</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <AffiliateBanner locale={locale} partnerKeys={['runpod', 'elevenlabs', 'zapier', 'webflow']} />
+  </div>
+</BaseLayout>
+
+<script define:vars={{ aIn: a.inputPerM, aOut: a.outputPerM, bIn: b.inputPerM, bOut: b.outputPerM }}>
+  const slider = document.getElementById('cmp-reqs');
+  function fmt(n) {
+    if (!Number.isFinite(n) || n <= 0) return '$0';
+    if (n < 0.01) return '$' + n.toFixed(4);
+    if (n < 1000) return '$' + n.toFixed(2);
+    return '$' + Math.round(n).toLocaleString('en-US');
+  }
+  function update() {
+    const reqs = Number(slider.value);
+    document.getElementById('cmp-reqs-val').textContent = reqs.toLocaleString('en-US');
+    const inM = (reqs * 1500) / 1_000_000;
+    const outM = (reqs * 500) / 1_000_000;
+    const costA = inM * aIn + outM * aOut;
+    const costB = inM * bIn + outM * bOut;
+    document.getElementById('cmp-bill-a').textContent = fmt(costA) + '/mo';
+    document.getElementById('cmp-bill-b').textContent = fmt(costB) + '/mo';
+    document.getElementById('cmp-save-yr').textContent = fmt(Math.abs(costA - costB) * 12) + '/yr';
+  }
+  slider.addEventListener('input', update);
+  update();
+</script>

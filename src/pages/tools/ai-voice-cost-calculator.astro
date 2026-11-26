@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import VoiceCalculator from '../../components/VoiceCalculator.astro';
+import AffiliateBanner from '../../components/AffiliateBanner.astro';
+import { TRANSLATIONS } from '../../i18n/translations';
+
+const t = TRANSLATIONS.en.voice;
+---
+<BaseLayout
+  title={t.title}
+  description={t.subtitle}
+  locale="en"
+  canonicalPath="/tools/ai-voice-cost-calculator/"
+  multilingualPath="tools/ai-voice-cost-calculator/"
+>
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+    <VoiceCalculator locale="en" />
+    <AffiliateBanner locale="en" partnerKeys={['elevenlabs', 'webflow', 'zapier', 'activecampaign']} />
+  </div>
+</BaseLayout>

@@ -1,0 +1,172 @@
+---
+import '../styles/global.css';
+import siteConfig from '../config/site.json';
+import modelsData from '../data/models.json';
+import { LOCALES, TRANSLATIONS, localePath, type Locale } from '../i18n/translations';
+import { formatDateShort } from '../utils/format';
+
+interface Props {
+  title: string;
+  description: string;
+  locale?: Locale;
+  canonicalPath?: string;
+  multilingualPath?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title,
+  description,
+  locale = 'en',
+  canonicalPath = '/',
+  multilingualPath,
+  jsonLd
+} = Astro.props;
+
+const t = TRANSLATIONS[locale];
+const base = siteConfig.siteUrl.replace(/\/$/, '');
+const fullCanonical = `${base}${canonicalPath.startsWith('/') ? canonicalPath : '/' + canonicalPath}`;
+const syncedDate = formatDateShort(modelsData.updatedAt);
+const pageTitle = title.includes(siteConfig.siteName) ? title : `${title} | ${siteConfig.siteName}`;
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={fullCanonical} />
+
+    {multilingualPath !== undefined && (
+      <>
+        {LOCALES.map((loc) => (
+          <link
+            rel="alternate"
+            hreflang={loc.hreflang}
+            href={`${base}${localePath(loc.code, multilingualPath)}`}
+          />
+        ))}
+        <link rel="alternate" hreflang="x-default" href={`${base}${localePath('en', multilingualPath)}`} />
+      </>
+    )}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={fullCanonical} />
+    <meta property="og:site_name" content={siteConfig.siteName} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+
+    {siteConfig.googleSiteVerification && (
+      <meta name="google-site-verification" content={siteConfig.googleSiteVerification} />
+    )}
+    {siteConfig.bingSiteVerification && (
+      <meta name="msvalidate.01" content={siteConfig.bingSiteVerification} />
+    )}
+    {siteConfig.adsensePublisherId && (
+      <script
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${siteConfig.adsensePublisherId}`}
+        crossorigin="anonymous"
+      ></script>
+    )}
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    {jsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    )}
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        <a href={localePath(locale)} class="flex items-center gap-2.5 shrink-0 group">
+          <div class="h-8 w-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-sm group-hover:bg-indigo-700 transition">
+            AI
+          </div>
+          <span class="font-bold text-slate-900 tracking-tight text-lg">{siteConfig.siteName}</span>
+        </a>
+
+        <nav class="hidden lg:flex items-center gap-1 text-sm font-medium text-slate-600 whitespace-nowrap">
+          <a href={localePath(locale)} class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition whitespace-nowrap">
+            {t.nav.llmCalc}
+          </a>
+          <a href={localePath(locale, 'tools/ai-voice-cost-calculator/')} class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition whitespace-nowrap">
+            {t.nav.voiceCalc}
+          </a>
+          <a href={localePath(locale, 'tools/gpu-vs-api-calculator/')} class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition whitespace-nowrap">
+            {t.nav.gpuCalc}
+          </a>
+          <a href={localePath(locale, 'tools/ai-saas-stack-calculator/')} class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition whitespace-nowrap">
+            {t.nav.stackCalc}
+          </a>
+          <a href={localePath(locale, 'compare/')} class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition whitespace-nowrap">
+            {t.nav.compare}
+          </a>
+        </nav>
+
+        <div class="flex items-center gap-1.5 shrink-0">
+          <div class="flex items-center bg-slate-100 rounded-lg p-0.5 text-xs font-medium whitespace-nowrap">
+            {LOCALES.map((loc) => (
+              <a
+                href={localePath(loc.code, multilingualPath ?? '')}
+                class={`px-2 py-1 rounded-md transition whitespace-nowrap ${
+                  loc.code === locale
+                    ? 'bg-white text-indigo-700 shadow-xs font-semibold'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+                title={loc.label}
+              >
+                {loc.native}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:hidden border-t border-slate-100 px-4 py-2 flex items-center gap-2 overflow-x-auto text-xs font-medium text-slate-600">
+        <a href={localePath(locale)} class="px-2.5 py-1.5 rounded-md bg-slate-100 shrink-0">{t.nav.llmCalc}</a>
+        <a href={localePath(locale, 'tools/ai-voice-cost-calculator/')} class="px-2.5 py-1.5 rounded-md bg-slate-100 shrink-0">{t.nav.voiceCalc}</a>
+        <a href={localePath(locale, 'tools/gpu-vs-api-calculator/')} class="px-2.5 py-1.5 rounded-md bg-slate-100 shrink-0">{t.nav.gpuCalc}</a>
+        <a href={localePath(locale, 'tools/ai-saas-stack-calculator/')} class="px-2.5 py-1.5 rounded-md bg-slate-100 shrink-0">{t.nav.stackCalc}</a>
+        <a href={localePath(locale, 'compare/')} class="px-2.5 py-1.5 rounded-md bg-slate-100 shrink-0">{t.nav.compare}</a>
+      </div>
+    </header>
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="border-t border-slate-200 bg-white mt-16">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-slate-900">{siteConfig.siteName}</span>
+              <span class="inline-flex items-center gap-1.5 text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full font-medium">
+                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                {t.footer.syncedPrefix} {syncedDate}
+              </span>
+            </div>
+            <p class="text-xs text-slate-500 mt-2 max-w-md">
+              {t.partners.disclosureShort}
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-5 text-sm text-slate-600">
+            <a href="/about/" class="hover:text-indigo-600 transition">{t.footer.about}</a>
+            <a href="/disclosure/" class="hover:text-indigo-600 transition">{t.footer.disclosure}</a>
+            <a href="/privacy/" class="hover:text-indigo-600 transition">{t.footer.privacy}</a>
+          </div>
+        </div>
+        <div class="mt-6 pt-6 border-t border-slate-100 text-xs text-slate-400 flex flex-col sm:flex-row justify-between gap-2">
+          <span>© {new Date().getFullYear()} {siteConfig.siteName}. {t.footer.rights}</span>
+          <span>Data source: OpenRouter Live Pricing Feed & Official Vendor Plans</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

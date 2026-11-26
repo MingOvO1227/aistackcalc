@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aistackcalc.com/sitemap-index.xml

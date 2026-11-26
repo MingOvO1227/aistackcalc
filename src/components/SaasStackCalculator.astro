@@ -1,0 +1,136 @@
+---
+import affiliates from '../config/affiliates.json';
+import { TRANSLATIONS, type Locale } from '../i18n/translations';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
+const t = TRANSLATIONS[locale].stack;
+const serializedPartners = JSON.stringify(affiliates.partners);
+---
+
+<section class="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+  <div class="p-6 sm:p-8 border-b border-slate-100 bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">{t.title}</h1>
+    <p class="mt-2 text-slate-600 max-w-2xl">{t.subtitle}</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-8">
+      <div class="rounded-2xl bg-white border border-slate-200 p-5">
+        <div class="flex justify-between text-xs font-semibold text-slate-600 mb-2">
+          <label for="st-team">{t.teamSize}</label>
+          <span id="sv-team" class="text-indigo-700 font-bold tabular-nums">3</span>
+        </div>
+        <input id="st-team" type="range" min="1" max="30" step="1" value="3" class="w-full" />
+      </div>
+
+      <div class="rounded-2xl bg-white border border-slate-200 p-5">
+        <div class="flex justify-between text-xs font-semibold text-slate-600 mb-2">
+          <label for="st-tasks">{t.monthlyWorkflows}</label>
+          <span id="sv-tasks" class="text-indigo-700 font-bold tabular-nums">2,000</span>
+        </div>
+        <input id="st-tasks" type="range" min="500" max="50000" step="500" value="2000" class="w-full" />
+      </div>
+
+      <div class="rounded-2xl bg-white border border-slate-200 p-5">
+        <div class="flex justify-between text-xs font-semibold text-slate-600 mb-2">
+          <label for="st-subs">{t.emailSubs}</label>
+          <span id="sv-subs" class="text-indigo-700 font-bold tabular-nums">2,500</span>
+        </div>
+        <input id="st-subs" type="range" min="0" max="50000" step="500" value="2500" class="w-full" />
+      </div>
+    </div>
+
+    <div class="flex flex-wrap gap-5 mt-5">
+      <label class="inline-flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer">
+        <input id="st-web" type="checkbox" checked class="rounded border-slate-300 text-indigo-600" />
+        <span>{t.needWebsite}</span>
+      </label>
+      <label class="inline-flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer">
+        <input id="st-voice" type="checkbox" checked class="rounded border-slate-300 text-indigo-600" />
+        <span>{t.needVoice}</span>
+      </label>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+      <div class="rounded-2xl bg-slate-900 text-white p-5">
+        <div class="text-xs text-slate-400">{t.totalMonthly}</div>
+        <div id="st-monthly" class="mt-1 text-3xl font-extrabold tabular-nums">$152/mo</div>
+      </div>
+      <div class="rounded-2xl bg-indigo-600 text-white p-5">
+        <div class="text-xs text-indigo-100">{t.totalYearly}</div>
+        <div id="st-yearly" class="mt-1 text-3xl font-extrabold tabular-nums">$1,824/yr</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-6 sm:p-8">
+    <h2 class="text-lg font-bold text-slate-900 mb-4">{t.recommendedTools}</h2>
+    <div id="st-breakdown" class="divide-y divide-slate-100 border border-slate-200 rounded-2xl overflow-hidden"></div>
+  </div>
+</section>
+
+<script define:vars={{ serializedPartners }}>
+  const PARTNERS = JSON.parse(serializedPartners);
+  const teamEl = document.getElementById('st-team');
+  const tasksEl = document.getElementById('st-tasks');
+  const subsEl = document.getElementById('st-subs');
+  const webEl = document.getElementById('st-web');
+  const voiceEl = document.getElementById('st-voice');
+
+  function updateStack() {
+    const team = Number(teamEl.value);
+    const tasks = Number(tasksEl.value);
+    const subs = Number(subsEl.value);
+
+    document.getElementById('sv-team').textContent = String(team);
+    document.getElementById('sv-tasks').textContent = tasks.toLocaleString('en-US');
+    document.getElementById('sv-subs').textContent = subs.toLocaleString('en-US');
+
+    const notionCost = team * 10;
+    const zapierCost = tasks <= 750 ? 20 : tasks <= 2000 ? 49 : tasks <= 10000 ? 129 : 299;
+    const emailCost = subs === 0 ? 0 : subs <= 1000 ? 15 : subs <= 5000 ? 49 : subs <= 15000 ? 149 : 299;
+    const webCost = webEl.checked ? 23 : 0;
+    const voiceCost = voiceEl.checked ? 22 : 0;
+
+    const items = [
+      { key: 'notion', cost: notionCost, detail: `${team} seats × $10/mo AI workspace` },
+      { key: 'zapier', cost: zapierCost, detail: `Up to ${tasks.toLocaleString('en-US')} automated AI tasks/mo` },
+      ...(subs > 0 ? [{ key: 'activecampaign', cost: emailCost, detail: `AI email automation for ${subs.toLocaleString('en-US')} contacts` }] : []),
+      ...(webEl.checked ? [{ key: 'webflow', cost: webCost, detail: 'CMS hosting + visual AI site builder' }] : []),
+      ...(voiceEl.checked ? [{ key: 'elevenlabs', cost: voiceCost, detail: 'Creator tier (100K chars/mo AI audio)' }] : [])
+    ];
+
+    const total = items.reduce((sum, x) => sum + x.cost, 0);
+    document.getElementById('st-monthly').textContent = `$${total.toLocaleString('en-US')}/mo`;
+    document.getElementById('st-yearly').textContent = `$${(total * 12).toLocaleString('en-US')}/yr`;
+
+    document.getElementById('st-breakdown').innerHTML = items.map((item) => {
+      const p = PARTNERS[item.key];
+      return `
+        <div class="p-4 sm:px-6 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-slate-900">${p.name}</span>
+              <span class="text-xs font-medium text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full">${p.category}</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">${item.detail}</p>
+          </div>
+          <div class="flex items-center gap-4 shrink-0">
+            <span class="text-base font-extrabold text-slate-900 tabular-nums">$${item.cost}/mo</span>
+            <a href="${p.url}" target="_blank" rel="sponsored noopener noreferrer" class="rounded-xl bg-slate-900 hover:bg-indigo-600 text-white text-xs font-semibold px-4 py-2 transition">
+              ${p.ctaText} →
+            </a>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  [teamEl, tasksEl, subsEl, webEl, voiceEl].forEach((el) => {
+    el.addEventListener('input', updateStack);
+    el.addEventListener('change', updateStack);
+  });
+  updateStack();
+</script>

@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LlmCalculator from './LlmCalculator.astro';
+import AffiliateBanner from './AffiliateBanner.astro';
+import modelsData from '../data/models.json';
+import siteConfig from '../config/site.json';
+import { TRANSLATIONS, localePath, type Locale } from '../i18n/translations';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = TRANSLATIONS[locale];
+const topComparisons = modelsData.comparisons.slice(0, 12);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: `${siteConfig.siteName} - ${t.nav.llmCalc}`,
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  description: t.hero.subtitle
+};
+---
+
+<BaseLayout
+  title={`${t.hero.title} | ${siteConfig.siteName}`}
+  description={t.hero.subtitle}
+  locale={locale}
+  canonicalPath={localePath(locale)}
+  multilingualPath=""
+  jsonLd={jsonLd}
+>
+  <section class="hero-grid border-b border-slate-200/80 bg-white">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+      <div class="max-w-3xl">
+        <span class="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-200 px-3.5 py-1 text-xs font-semibold text-indigo-700">
+          <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          {t.hero.badge}
+        </span>
+        <h1 class="mt-4 text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+          {t.hero.title}
+        </h1>
+        <p class="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
+          {t.hero.subtitle}
+        </p>
+        <div class="mt-6 flex flex-wrap gap-3 text-xs sm:text-sm font-medium text-slate-700">
+          <span class="inline-flex items-center gap-1.5 rounded-xl bg-slate-100 px-3.5 py-2">
+            <strong class="text-indigo-700">{modelsData.models.length}</strong> {t.hero.modelsCount}
+          </span>
+          <span class="inline-flex items-center gap-1.5 rounded-xl bg-slate-100 px-3.5 py-2">
+            ⚡ {t.hero.autoSync}
+          </span>
+          <span class="inline-flex items-center gap-1.5 rounded-xl bg-slate-100 px-3.5 py-2">
+            ✓ {t.hero.freeTool}
+          </span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-10">
+        <a href={localePath(locale, 'tools/ai-voice-cost-calculator/')} class="group rounded-2xl border border-slate-200 bg-white p-5 hover:border-indigo-400 hover:shadow-md transition">
+          <div class="text-xs font-bold uppercase tracking-wider text-indigo-600">AI Voice & Dubbing</div>
+          <div class="mt-1 font-bold text-slate-900 group-hover:text-indigo-700 transition">{t.nav.voiceCalc} →</div>
+          <p class="mt-1.5 text-xs text-slate-500 line-clamp-2">{t.voice.subtitle}</p>
+        </a>
+        <a href={localePath(locale, 'tools/gpu-vs-api-calculator/')} class="group rounded-2xl border border-slate-200 bg-white p-5 hover:border-indigo-400 hover:shadow-md transition">
+          <div class="text-xs font-bold uppercase tracking-wider text-emerald-600">Cloud GPU Self-Host</div>
+          <div class="mt-1 font-bold text-slate-900 group-hover:text-indigo-700 transition">{t.nav.gpuCalc} →</div>
+          <p class="mt-1.5 text-xs text-slate-500 line-clamp-2">{t.gpu.subtitle}</p>
+        </a>
+        <a href={localePath(locale, 'tools/ai-saas-stack-calculator/')} class="group rounded-2xl border border-slate-200 bg-white p-5 hover:border-indigo-400 hover:shadow-md transition">
+          <div class="text-xs font-bold uppercase tracking-wider text-amber-600">No-Code SaaS Stack</div>
+          <div class="mt-1 font-bold text-slate-900 group-hover:text-indigo-700 transition">{t.nav.stackCalc} →</div>
+          <p class="mt-1.5 text-xs text-slate-500 line-clamp-2">{t.stack.subtitle}</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+    <LlmCalculator locale={locale} />
+
+    <AffiliateBanner locale={locale} partnerKeys={['elevenlabs', 'runpod', 'webflow', 'notion']} />
+
+    <section class="mt-14">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-5">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">{t.compare.heading}</h2>
+          <p class="text-sm text-slate-600 mt-1">{t.compare.subheading}</p>
+        </div>
+        <a href={localePath(locale, 'compare/')} class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">
+          {t.compare.viewAll} →
+        </a>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+        {topComparisons.map((c) => (
+          <a
+            href={localePath(locale, `compare/${c.slug}/`)}
+            class="rounded-2xl border border-slate-200 bg-white px-4 py-3.5 hover:border-indigo-300 hover:shadow-xs transition flex items-center justify-between gap-2"
+          >
+            <span class="text-sm font-semibold text-slate-800 truncate">{c.title}</span>
+            <span class="text-xs font-bold text-indigo-600 shrink-0">{t.compare.compareBtn} →</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

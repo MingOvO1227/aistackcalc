@@ -1,0 +1,19 @@
+---
+import CompareDetailView from '../../components/CompareDetailView.astro';
+import modelsData from '../../data/models.json';
+
+export function getStaticPaths() {
+  const bySlug = new Map(modelsData.models.map((m) => [m.slug, m]));
+  return modelsData.comparisons
+    .map((c) => {
+      const a = bySlug.get(c.modelA);
+      const b = bySlug.get(c.modelB);
+      if (!a || !b) return null;
+      return { params: { slug: c.slug }, props: { a, b } };
+    })
+    .filter(Boolean);
+}
+
+const { a, b } = Astro.props;
+---
+<CompareDetailView locale="en" a={a} b={b} />

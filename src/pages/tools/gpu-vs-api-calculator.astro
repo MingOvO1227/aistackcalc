@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GpuCalculator from '../../components/GpuCalculator.astro';
+import AffiliateBanner from '../../components/AffiliateBanner.astro';
+import { TRANSLATIONS } from '../../i18n/translations';
+
+const t = TRANSLATIONS.en.gpu;
+---
+<BaseLayout
+  title={t.title}
+  description={t.subtitle}
+  locale="en"
+  canonicalPath="/tools/gpu-vs-api-calculator/"
+  multilingualPath="tools/gpu-vs-api-calculator/"
+>
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+    <GpuCalculator locale="en" />
+    <AffiliateBanner locale="en" partnerKeys={['runpod', 'zapier', 'notion', 'glide']} />
+  </div>
+</BaseLayout>

@@ -1,0 +1,236 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AffiliateBanner from './AffiliateBanner.astro';
+import modelsData from '../data/models.json';
+import { TRANSLATIONS, localePath, type Locale } from '../i18n/translations';
+import { formatContext, formatUsd } from '../utils/format';
+
+interface ModelItem {
+  id: string;
+  slug: string;
+  name: string;
+  providerKey: string;
+  provider: string;
+  openWeight: boolean;
+  inputPerM: number;
+  outputPerM: number;
+  blendedPerM: number;
+  contextLength: number;
+  tier: string;
+  description: string;
+}
+
+interface Props {
+  locale: Locale;
+  model: ModelItem;
+}
+
+const { locale, model } = Astro.props;
+const t = TRANSLATIONS[locale];
+const md = t.modelDetail;
+const cmp = t.compare;
+
+const scenarios = [
+  { label: t.llm.presetChatbot, reqs: 10_000, inTok: 1200, outTok: 400 },
+  { label: t.llm.presetCoding, reqs: 100_000, inTok: 2000, outTok: 600 },
+  { label: t.llm.presetRag, reqs: 1_000_000, inTok: 4000, outTok: 800 }
+].map((s) => {
+  const monthly = (s.reqs * s.inTok / 1_000_000) * model.inputPerM + (s.reqs * s.outTok / 1_000_000) * model.outputPerM;
+  return { ...s, monthly, yearly: monthly * 12 };
+});
+
+const cheaperAlternatives = modelsData.models
+  .filter((m) => m.slug !== model.slug && m.blendedPerM < model.blendedPerM)
+  .sort((a, b) => b.contextLength - a.contextLength || a.blendedPerM - b.blendedPerM)
+  .slice(0, 6);
+
+const relatedComparisons = modelsData.comparisons
+  .filter((c) => c.modelA === model.slug || c.modelB === model.slug)
+  .slice(0, 6);
+
+const title = `${model.name} (${model.provider}) · ${t.nav.llmCalc}`;
+const description = `${model.provider} ${model.name}: $${model.inputPerM}/1M in, $${model.outputPerM}/1M out, ${formatContext(model.contextLength)} context.`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: `${model.provider} ${model.name} API`,
+  applicationCategory: 'DeveloperApplication',
+  description
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  locale={locale}
+  canonicalPath={localePath(locale, `models/${model.slug}/`)}
+  multilingualPath={`models/${model.slug}/`}
+  jsonLd={jsonLd}
+>
+  <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-10">
+    <nav class="text-xs font-medium text-slate-500 mb-6 flex items-center gap-2 flex-wrap">
+      <a href={localePath(locale)} class="hover:text-indigo-600">{t.nav.llmCalc}</a>
+      <span>/</span>
+      <span class="text-slate-800">{model.provider}</span>
+      <span>/</span>
+      <span class="text-slate-900 font-semibold">{model.name}</span>
+    </nav>
+
+    <div class="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="text-xs font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full">
+          {model.provider}
+        </span>
+        <span class="text-xs font-semibold capitalize bg-slate-100 text-slate-700 px-3 py-1 rounded-full">
+          {model.tier} {md.tierSuffix}
+        </span>
+        {model.openWeight && (
+          <span class="text-xs font-semibold bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full">
+            {md.openSelfHost}
+          </span>
+        )}
+      </div>
+
+      <h1 class="mt-4 text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+        {model.name} · {t.nav.llmCalc}
+      </h1>
+      {model.description && (
+        <p class="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">{model.description}</p>
+      )}
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-7">
+        <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
+          <div class="text-xs text-slate-500 font-medium">{cmp.inputPerM}</div>
+          <div class="mt-1 text-2xl font-extrabold text-slate-900 tabular-nums">${model.inputPerM}</div>
+        </div>
+        <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
+          <div class="text-xs text-slate-500 font-medium">{cmp.outputPerM}</div>
+          <div class="mt-1 text-2xl font-extrabold text-slate-900 tabular-nums">${model.outputPerM}</div>
+        </div>
+        <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
+          <div class="text-xs text-slate-500 font-medium">{md.blendedRate}</div>
+          <div class="mt-1 text-2xl font-extrabold text-indigo-700 tabular-nums">${model.blendedPerM}</div>
+        </div>
+        <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
+          <div class="text-xs text-slate-500 font-medium">{cmp.contextWindow}</div>
+          <div class="mt-1 text-2xl font-extrabold text-slate-900 tabular-nums">{formatContext(model.contextLength)}</div>
+        </div>
+      </div>
+
+      <div class="mt-8 rounded-2xl border border-indigo-200 bg-indigo-50/50 p-5 sm:p-6">
+        <h2 class="text-base font-bold text-slate-900 mb-4">{model.name} · {md.quickEstimator}</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1" for="m-reqs">{t.llm.monthlyReqs}</label>
+            <input id="m-reqs" type="number" value="50000" min="100" step="1000" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold tabular-nums" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1" for="m-in">{t.llm.inputTokens}</label>
+            <input id="m-in" type="number" value="1500" min="10" step="100" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold tabular-nums" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1" for="m-out">{t.llm.outputTokens}</label>
+            <input id="m-out" type="number" value="500" min="10" step="50" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold tabular-nums" />
+          </div>
+        </div>
+        <div class="mt-5 flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-indigo-200/70">
+          <div>
+            <span class="text-xs font-semibold text-slate-600">{md.estMonthlyLabel}</span>
+            <span id="m-monthly" class="ml-2 text-2xl font-extrabold text-indigo-700 tabular-nums">$0.00</span>
+            <span id="m-yearly" class="ml-2 text-sm text-slate-500 tabular-nums">($0.00/yr)</span>
+          </div>
+          <a href={localePath(locale, 'tools/gpu-vs-api-calculator/')} class="text-xs font-bold text-indigo-700 hover:underline">
+            {md.checkGpuCta} →
+          </a>
+        </div>
+      </div>
+
+      <h2 class="mt-8 text-lg font-bold text-slate-900">{md.scenariosTitle}</h2>
+      <div class="mt-3 overflow-x-auto rounded-2xl border border-slate-200">
+        <table class="w-full text-sm text-left">
+          <thead class="bg-slate-50 text-xs uppercase text-slate-500 border-b border-slate-200">
+            <tr>
+              <th class="py-3 px-4">{md.colWorkload}</th>
+              <th class="py-3 px-4">{md.colVolume}</th>
+              <th class="py-3 px-4 text-right">{md.colMonthlyEst}</th>
+              <th class="py-3 px-4 text-right">{md.colAnnualEst}</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {scenarios.map((s) => (
+              <tr>
+                <td class="py-3 px-4 font-semibold text-slate-800">{s.label}</td>
+                <td class="py-3 px-4 text-slate-600 tabular-nums">
+                  {s.reqs.toLocaleString('en-US')} ({s.inTok} in / {s.outTok} out)
+                </td>
+                <td class="py-3 px-4 text-right font-bold text-slate-900 tabular-nums">{formatUsd(s.monthly)}</td>
+                <td class="py-3 px-4 text-right text-slate-600 tabular-nums">{formatUsd(s.yearly)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {cheaperAlternatives.length > 0 && (
+      <section class="mt-10">
+        <h2 class="text-xl font-bold text-slate-900 mb-4">{md.cheaperAltsTitle}: {model.name}</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {cheaperAlternatives.map((alt) => {
+            const pctCheaper = Math.round((1 - alt.blendedPerM / model.blendedPerM) * 100);
+            return (
+              <a href={localePath(locale, `models/${alt.slug}/`)} class="rounded-2xl border border-slate-200 bg-white p-4 hover:border-indigo-300 hover:shadow-xs transition block">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-xs font-semibold text-slate-500">{alt.provider}</span>
+                  <span class="text-xs font-bold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">
+                    -{pctCheaper}% {md.pctCheaper}
+                  </span>
+                </div>
+                <div class="mt-1.5 font-bold text-slate-900">{alt.name}</div>
+                <div class="mt-2 text-xs text-slate-600 tabular-nums">
+                  ${alt.inputPerM} / ${alt.outputPerM} · {formatContext(alt.contextLength)}
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+    )}
+
+    {relatedComparisons.length > 0 && (
+      <section class="mt-10">
+        <h2 class="text-xl font-bold text-slate-900 mb-4">{md.directComparisonsTitle}: {model.name}</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {relatedComparisons.map((c) => (
+            <a href={localePath(locale, `compare/${c.slug}/`)} class="rounded-2xl border border-slate-200 bg-white px-4 py-3.5 hover:border-indigo-300 transition flex items-center justify-between">
+              <span class="text-sm font-semibold text-slate-800">{c.title}</span>
+              <span class="text-xs font-bold text-indigo-600">{cmp.compareBtn} →</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <AffiliateBanner locale={locale} partnerKeys={model.openWeight ? ['runpod', 'elevenlabs', 'zapier', 'webflow'] : ['elevenlabs', 'runpod', 'webflow', 'notion']} />
+  </div>
+</BaseLayout>
+
+<script define:vars={{ inputPerM: model.inputPerM, outputPerM: model.outputPerM }}>
+  const rEl = document.getElementById('m-reqs');
+  const iEl = document.getElementById('m-in');
+  const oEl = document.getElementById('m-out');
+
+  function calc() {
+    const reqs = Math.max(0, Number(rEl.value) || 0);
+    const inT = Math.max(0, Number(iEl.value) || 0);
+    const outT = Math.max(0, Number(oEl.value) || 0);
+    const mo = (reqs * inT / 1_000_000) * inputPerM + (reqs * outT / 1_000_000) * outputPerM;
+    const fmt = (n) => !Number.isFinite(n) || n <= 0 ? '$0.00' : n < 0.01 ? '$' + n.toFixed(4) : n < 1000 ? '$' + n.toFixed(2) : '$' + Math.round(n).toLocaleString('en-US');
+    document.getElementById('m-monthly').textContent = fmt(mo) + '/mo';
+    document.getElementById('m-yearly').textContent = `(${fmt(mo * 12)}/yr)`;
+  }
+
+  [rEl, iEl, oEl].forEach((el) => el.addEventListener('input', calc));
+  calc();
+</script>
