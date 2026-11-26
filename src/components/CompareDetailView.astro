@@ -28,6 +28,8 @@ interface Props {
 const { locale, a, b } = Astro.props;
 const t = TRANSLATIONS[locale].compare;
 const navT = TRANSLATIONS[locale].nav;
+const llmT = TRANSLATIONS[locale].llm;
+const defaultCurrency = locale === 'zh' ? 'CNY' : locale === 'ja' ? 'JPY' : (locale === 'de' || locale === 'fr') ? 'EUR' : 'USD';
 
 const isTie = Math.abs(a.blendedPerM - b.blendedPerM) < 0.0001;
 const cheaper = a.blendedPerM <= b.blendedPerM ? a : b;
@@ -60,15 +62,24 @@ const description = isTie
     </nav>
 
     <div class="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8 shadow-sm">
-      {isTie ? (
-        <span class="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-200 dark:border-indigo-800 px-3 py-1 text-xs font-bold text-indigo-700 dark:text-indigo-300">
-          {t.priceTieBadge}
-        </span>
-      ) : (
-        <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800 px-3 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300">
-          {t.costWinner}: {cheaper.name} ({diffPct}% {t.lowerBlended})
-        </span>
-      )}
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        {isTie ? (
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-200 dark:border-indigo-800 px-3 py-1 text-xs font-bold text-indigo-700 dark:text-indigo-300">
+            {t.priceTieBadge}
+          </span>
+        ) : (
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800 px-3 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300">
+            {t.costWinner}: {cheaper.name} ({diffPct}% {t.lowerBlended})
+          </span>
+        )}
+        <select id="cmpd-currency" aria-label={llmT.currencyLabel} class="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 px-3 py-1.5 text-xs font-bold focus:border-indigo-500 focus:outline-none">
+          <option value="USD" selected={defaultCurrency === 'USD'}>USD ($)</option>
+          <option value="CNY" selected={defaultCurrency === 'CNY'}>CNY (¥)</option>
+          <option value="EUR" selected={defaultCurrency === 'EUR'}>EUR (€)</option>
+          <option value="JPY" selected={defaultCurrency === 'JPY'}>JPY (¥)</option>
+          <option value="GBP" selected={defaultCurrency === 'GBP'}>GBP (£)</option>
+        </select>
+      </div>
       <h1 class="mt-4 text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
         {a.name} vs {b.name}
       </h1>
@@ -92,11 +103,11 @@ const description = isTie
             <dl class="mt-4 space-y-2 text-sm">
               <div class="flex justify-between">
                 <dt class="text-slate-500 dark:text-slate-400">{t.inputPerM}</dt>
-                <dd class="font-bold text-slate-900 dark:text-white tabular-nums">${m.inputPerM}</dd>
+                <dd id={`cmp-in-${m.slug === a.slug ? 'a' : 'b'}`} class="font-bold text-slate-900 dark:text-white tabular-nums">${m.inputPerM}</dd>
               </div>
               <div class="flex justify-between">
                 <dt class="text-slate-500 dark:text-slate-400">{t.outputPerM}</dt>
-                <dd class="font-bold text-slate-900 dark:text-white tabular-nums">${m.outputPerM}</dd>
+                <dd id={`cmp-out-${m.slug === a.slug ? 'a' : 'b'}`} class="font-bold text-slate-900 dark:text-white tabular-nums">${m.outputPerM}</dd>
               </div>
               <div class="flex justify-between">
                 <dt class="text-slate-500 dark:text-slate-400">{t.contextWindow}</dt>
@@ -136,15 +147,40 @@ const description = isTie
 
 <script define:vars={{ aIn: a.inputPerM, aOut: a.outputPerM, bIn: b.inputPerM, bOut: b.outputPerM }}>
   const slider = document.getElementById('cmp-reqs');
-  function fmt(n) {
-    if (!Number.isFinite(n) || n <= 0) return '$0';
-    if (n < 0.01) return '$' + n.toFixed(4);
-    if (n < 1000) return '$' + n.toFixed(2);
-    return '$' + Math.round(n).toLocaleString('en-US');
+  const currEl = document.getElementById('cmpd-currency');
+  const RATES = {
+    USD: { symbol: '$', rate: 1 },
+    CNY: { symbol: '¥', rate: 7.25 },
+    EUR: { symbol: '€', rate: 0.92 },
+    JPY: { symbol: '¥', rate: 154 },
+    GBP: { symbol: '£', rate: 0.79 }
+  };
+  try {
+    const saved = localStorage.getItem('currency');
+    if (saved && RATES[saved]) currEl.value = saved;
+  } catch {}
+  function fmt(usd) {
+    const c = RATES[currEl.value] || RATES.USD;
+    const n = usd * c.rate;
+    if (!Number.isFinite(n) || n <= 0) return c.symbol + '0';
+    if (n < 0.01) return c.symbol + n.toFixed(4);
+    if (currEl.value === 'JPY') return c.symbol + Math.round(n).toLocaleString('en-US');
+    if (n < 1000) return c.symbol + n.toFixed(2);
+    return c.symbol + Math.round(n).toLocaleString('en-US');
+  }
+  function fmtRate(usd) {
+    const c = RATES[currEl.value] || RATES.USD;
+    const n = usd * c.rate;
+    if (currEl.value === 'JPY') return c.symbol + (n >= 10 ? Math.round(n) : n.toFixed(1));
+    return c.symbol + (n >= 1 ? n.toFixed(2) : n.toFixed(3));
   }
   function update() {
     const reqs = Number(slider.value);
     document.getElementById('cmp-reqs-val').textContent = reqs.toLocaleString('en-US');
+    document.getElementById('cmp-in-a').textContent = fmtRate(aIn);
+    document.getElementById('cmp-out-a').textContent = fmtRate(aOut);
+    document.getElementById('cmp-in-b').textContent = fmtRate(bIn);
+    document.getElementById('cmp-out-b').textContent = fmtRate(bOut);
     const inM = (reqs * 1500) / 1_000_000;
     const outM = (reqs * 500) / 1_000_000;
     const costA = inM * aIn + outM * aOut;
@@ -154,5 +190,9 @@ const description = isTie
     document.getElementById('cmp-save-yr').textContent = fmt(Math.abs(costA - costB) * 12) + '/yr';
   }
   slider.addEventListener('input', update);
+  currEl.addEventListener('change', () => {
+    try { localStorage.setItem('currency', currEl.value); } catch {}
+    update();
+  });
   update();
 </script>

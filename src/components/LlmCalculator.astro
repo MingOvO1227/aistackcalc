@@ -243,7 +243,17 @@ const serializedLabels = JSON.stringify({
   if (qp.get('in')) { els.inNum.value = qp.get('in'); els.inRange.value = Math.min(100000, Number(qp.get('in')) || 1500); }
   if (qp.get('out')) { els.outNum.value = qp.get('out'); els.outRange.value = Math.min(16000, Number(qp.get('out')) || 500); }
   if (qp.get('cache')) { els.cacheRange.value = qp.get('cache'); }
-  if (qp.get('cur') && RATES[qp.get('cur')]) { els.currency.value = qp.get('cur'); }
+  if (qp.get('cur') && RATES[qp.get('cur')]) {
+    els.currency.value = qp.get('cur');
+  } else {
+    try {
+      const savedCur = localStorage.getItem('currency');
+      if (savedCur && RATES[savedCur]) els.currency.value = savedCur;
+    } catch {}
+  }
+  els.currency.addEventListener('change', () => {
+    try { localStorage.setItem('currency', els.currency.value); } catch {}
+  });
 
   let lastRenderedRows = [];
 

@@ -139,6 +139,14 @@ const serializedLabels = JSON.stringify({
   const currEl = document.getElementById('tc-currency');
   const tbody = document.getElementById('tc-tbody');
 
+  try {
+    const savedCur = localStorage.getItem('currency');
+    if (savedCur && RATES[savedCur]) currEl.value = savedCur;
+  } catch {}
+  currEl.addEventListener('change', () => {
+    try { localStorage.setItem('currency', currEl.value); } catch {}
+  });
+
   function esc(str) {
     return String(str).replace(/[&<>"']/g, (ch) => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
