@@ -12,10 +12,12 @@ export const LOCALES: { code: Locale; label: string; native: string; hreflang: s
 export interface TranslationDict {
   nav: {
     llmCalc: string;
+    tokenCounter: string;
     voiceCalc: string;
     gpuCalc: string;
     stackCalc: string;
     compare: string;
+    toggleTheme: string;
   };
   hero: {
     badge: string;
@@ -64,6 +66,36 @@ export interface TranslationDict {
     tierBalanced: string;
     tierFlagship: string;
     tierReasoning: string;
+    currencyLabel: string;
+    minContextLabel: string;
+    maxBudgetLabel: string;
+    anyContext: string;
+    anyBudget: string;
+    exportCsv: string;
+    copyLink: string;
+    copiedLink: string;
+    bestMatchTitle: string;
+  };
+  tokenCounter: {
+    title: string;
+    subtitle: string;
+    privacyBadge: string;
+    sampleEn: string;
+    sampleZh: string;
+    sampleCode: string;
+    clearBtn: string;
+    placeholder: string;
+    estTokens: string;
+    charsLabel: string;
+    wordsLabel: string;
+    cjkLabel: string;
+    outputRatioLabel: string;
+    runsPerDayLabel: string;
+    colSingleRun: string;
+    colMonthlyRun: string;
+    colFits: string;
+    fitsYes: string;
+    fitsNo: string;
   };
   voice: {
     title: string;
@@ -161,10 +193,12 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
   en: {
     nav: {
       llmCalc: 'LLM API Calculator',
+      tokenCounter: 'Token Counter',
       voiceCalc: 'AI Voice Cost',
       gpuCalc: 'GPU vs API',
       stackCalc: 'AI SaaS Stack',
-      compare: 'Compare Models'
+      compare: 'Compare Models',
+      toggleTheme: 'Toggle Dark / Light Mode'
     },
     hero: {
       badge: 'Live Pricing · Auto-Updated Daily',
@@ -212,7 +246,37 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
       tierBudget: 'Budget',
       tierBalanced: 'Balanced',
       tierFlagship: 'Flagship',
-      tierReasoning: 'Reasoning'
+      tierReasoning: 'Reasoning',
+      currencyLabel: 'Currency',
+      minContextLabel: 'Min Context',
+      maxBudgetLabel: 'Max Budget / mo',
+      anyContext: 'Any Context',
+      anyBudget: 'Any Budget',
+      exportCsv: 'Export CSV',
+      copyLink: 'Share Link',
+      copiedLink: 'Copied!',
+      bestMatchTitle: 'Best-Value Match'
+    },
+    tokenCounter: {
+      title: 'Live AI Token Counter & Prompt Cost Estimator',
+      subtitle: 'Paste any prompt, document, or code snippet to estimate exact token count and real-time API cost across 72+ live AI models.',
+      privacyBadge: '100% Local in Browser · Your text never leaves your device',
+      sampleEn: 'Sample: English Prompt',
+      sampleZh: 'Sample: Chinese Doc',
+      sampleCode: 'Sample: Code Snippet',
+      clearBtn: 'Clear',
+      placeholder: 'Paste your prompt, article, JSON, or source code here...',
+      estTokens: 'Estimated Tokens',
+      charsLabel: 'Characters',
+      wordsLabel: 'English Words',
+      cjkLabel: 'CJK Characters',
+      outputRatioLabel: 'Expected Output Tokens',
+      runsPerDayLabel: 'Runs / Day',
+      colSingleRun: 'Per Run',
+      colMonthlyRun: 'Est. Monthly',
+      colFits: 'Context Fit',
+      fitsYes: 'Fits',
+      fitsNo: 'Exceeds'
     },
     voice: {
       title: 'AI Voice, Audiobook & Dubbing Cost Calculator',
@@ -308,10 +372,12 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
   zh: {
     nav: {
       llmCalc: '大模型 API 计费',
+      tokenCounter: 'Token 计费器',
       voiceCalc: 'AI 语音成本',
       gpuCalc: '云 GPU vs API',
       stackCalc: 'AI SaaS 预算',
-      compare: '模型比价'
+      compare: '模型比价',
+      toggleTheme: '切换深色 / 浅色模式'
     },
     hero: {
       badge: '实时定价 · 每日全自动同步',
@@ -359,7 +425,37 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
       tierBudget: '经济型',
       tierBalanced: '均衡型',
       tierFlagship: '旗舰型',
-      tierReasoning: '推理型'
+      tierReasoning: '推理型',
+      currencyLabel: '币种',
+      minContextLabel: '最低上下文',
+      maxBudgetLabel: '月预算上限',
+      anyContext: '不限上下文',
+      anyBudget: '不限预算',
+      exportCsv: '导出 CSV 报价',
+      copyLink: '复制分享链接',
+      copiedLink: '已复制！',
+      bestMatchTitle: '当前条件最优推荐'
+    },
+    tokenCounter: {
+      title: '在线 Token 估算器 & 提示词实时计费工具',
+      subtitle: '粘贴任意中英文提示词、长文档或代码片段，秒算 Token 数量与全球 72+ 款最新大模型的单次/月度真实调用费用。',
+      privacyBadge: '100% 浏览器本地计算 · 你的文本绝不上传任何服务器',
+      sampleEn: '示例：英文提示词',
+      sampleZh: '示例：中文长文档',
+      sampleCode: '示例：代码片段',
+      clearBtn: '清空',
+      placeholder: '在这里粘贴你的提示词、文章、JSON 或源代码...',
+      estTokens: '预估 Token 数',
+      charsLabel: '总字符数',
+      wordsLabel: '英文词数',
+      cjkLabel: '中文/日韩字数',
+      outputRatioLabel: '预期输出 Token 数',
+      runsPerDayLabel: '每日运行次数',
+      colSingleRun: '单次费用',
+      colMonthlyRun: '月度预估',
+      colFits: '上下文校验',
+      fitsYes: '可完整装下',
+      fitsNo: '超出上限'
     },
     voice: {
       title: 'AI 语音、有声书与多语言配音成本计算器',
@@ -455,10 +551,12 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
   ja: {
     nav: {
       llmCalc: 'LLM API 料金計算',
+      tokenCounter: 'トークン計算',
       voiceCalc: 'AI音声コスト',
       gpuCalc: 'GPU vs API比較',
       stackCalc: 'AI SaaS 予算',
-      compare: 'モデル比較一覧'
+      compare: 'モデル比較一覧',
+      toggleTheme: 'ダーク / ライト切替'
     },
     hero: {
       badge: '毎日自動更新 · リアルタイム料金',
@@ -506,7 +604,37 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
       tierBudget: '低コスト',
       tierBalanced: 'バランス',
       tierFlagship: 'フラッグシップ',
-      tierReasoning: '推論特化'
+      tierReasoning: '推論特化',
+      currencyLabel: '通貨',
+      minContextLabel: '最小コンテキスト',
+      maxBudgetLabel: '月額予算上限',
+      anyContext: '指定なし',
+      anyBudget: '予算上限なし',
+      exportCsv: 'CSV出力',
+      copyLink: '共有リンク',
+      copiedLink: 'コピー完了!',
+      bestMatchTitle: '最適おすすめモデル'
+    },
+    tokenCounter: {
+      title: 'リアルタイム AI トークン数＆プロンプト料金計算機',
+      subtitle: 'プロンプトや文書・コードを貼り付けるだけで、トークン数と最新72モデルの1回/月額API料金を即座に試算。',
+      privacyBadge: '100% ブラウザ内処理 · 入力テキストはサーバーに送信されません',
+      sampleEn: '例：英語プロンプト',
+      sampleZh: '例：日本語/中国語文書',
+      sampleCode: '例：ソースコード',
+      clearBtn: 'クリア',
+      placeholder: 'プロンプト、記事、JSON、またはコードをここに貼り付け...',
+      estTokens: '推定トークン数',
+      charsLabel: '総文字数',
+      wordsLabel: '英単語数',
+      cjkLabel: '日本語/CJK文字',
+      outputRatioLabel: '想定出力トークン数',
+      runsPerDayLabel: '1日の実行回数',
+      colSingleRun: '1回あたり',
+      colMonthlyRun: '月間目安',
+      colFits: 'コンテキスト判定',
+      fitsYes: '収まる',
+      fitsNo: '上限超過'
     },
     voice: {
       title: 'AI音声・ナレーション・多言語吹替コスト計算機',
@@ -602,10 +730,12 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
   de: {
     nav: {
       llmCalc: 'LLM API Rechner',
+      tokenCounter: 'Token-Zähler',
       voiceCalc: 'KI-Stimme Kosten',
       gpuCalc: 'GPU vs API',
       stackCalc: 'KI SaaS Stack',
-      compare: 'Modelle vergleichen'
+      compare: 'Modelle vergleichen',
+      toggleTheme: 'Dunkel / Hell umschalten'
     },
     hero: {
       badge: 'Live-Preise · Täglich automatisch aktualisiert',
@@ -653,7 +783,37 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
       tierBudget: 'Günstig',
       tierBalanced: 'Ausgewogen',
       tierFlagship: 'Flaggschiff',
-      tierReasoning: 'Reasoning'
+      tierReasoning: 'Reasoning',
+      currencyLabel: 'Währung',
+      minContextLabel: 'Min. Kontext',
+      maxBudgetLabel: 'Max. Budget/Mo',
+      anyContext: 'Beliebiger Kontext',
+      anyBudget: 'Kein Limit',
+      exportCsv: 'CSV Export',
+      copyLink: 'Link kopieren',
+      copiedLink: 'Kopiert!',
+      bestMatchTitle: 'Beste Empfehlung'
+    },
+    tokenCounter: {
+      title: 'Live KI-Token-Zähler & Prompt-Kostenrechner',
+      subtitle: 'Fügen Sie einen Prompt, Text oder Code ein, um sofort die Token-Anzahl und API-Kosten für 72+ KI-Modelle zu berechnen.',
+      privacyBadge: '100% lokal im Browser · Ihr Text verlässt niemals Ihr Gerät',
+      sampleEn: 'Beispiel: Englisch',
+      sampleZh: 'Beispiel: Dokument',
+      sampleCode: 'Beispiel: Code',
+      clearBtn: 'Leeren',
+      placeholder: 'Prompt, Text, JSON oder Quellcode hier einfügen...',
+      estTokens: 'Geschätzte Tokens',
+      charsLabel: 'Zeichen',
+      wordsLabel: 'Wörter',
+      cjkLabel: 'CJK-Zeichen',
+      outputRatioLabel: 'Erwartete Output-Tokens',
+      runsPerDayLabel: 'Aufrufe / Tag',
+      colSingleRun: 'Pro Aufruf',
+      colMonthlyRun: 'Monatl. ca.',
+      colFits: 'Kontext-Check',
+      fitsYes: 'Passt',
+      fitsNo: 'Zu lang'
     },
     voice: {
       title: 'KI-Stimme, Hörbuch & Synchronisations-Kostenrechner',
@@ -749,10 +909,12 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
   es: {
     nav: {
       llmCalc: 'Calculadora LLM API',
+      tokenCounter: 'Contador Tokens',
       voiceCalc: 'Costo Voz IA',
       gpuCalc: 'GPU vs API',
       stackCalc: 'Stack SaaS IA',
-      compare: 'Comparar Modelos'
+      compare: 'Comparar Modelos',
+      toggleTheme: 'Modo Oscuro / Claro'
     },
     hero: {
       badge: 'Precios en Vivo · Actualización Diaria Automática',
@@ -800,7 +962,37 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
       tierBudget: 'Económico',
       tierBalanced: 'Equilibrado',
       tierFlagship: 'Flagship',
-      tierReasoning: 'Razonamiento'
+      tierReasoning: 'Razonamiento',
+      currencyLabel: 'Moneda',
+      minContextLabel: 'Contexto Mín.',
+      maxBudgetLabel: 'Presupuesto Máx.',
+      anyContext: 'Cualquier Contexto',
+      anyBudget: 'Sin Límite',
+      exportCsv: 'Exportar CSV',
+      copyLink: 'Compartir',
+      copiedLink: '¡Copiado!',
+      bestMatchTitle: 'Mejor Opción'
+    },
+    tokenCounter: {
+      title: 'Contador de Tokens IA y Estimador de Costo por Prompt',
+      subtitle: 'Pega cualquier prompt, documento o código para estimar los tokens exactos y el costo real en más de 72 modelos de IA.',
+      privacyBadge: '100% Local en tu navegador · Tu texto nunca se envía a servidores',
+      sampleEn: 'Ejemplo: Prompt',
+      sampleZh: 'Ejemplo: Documento',
+      sampleCode: 'Ejemplo: Código',
+      clearBtn: 'Limpiar',
+      placeholder: 'Pega aquí tu prompt, artículo, JSON o código fuente...',
+      estTokens: 'Tokens Estimados',
+      charsLabel: 'Caracteres',
+      wordsLabel: 'Palabras',
+      cjkLabel: 'Caracteres CJK',
+      outputRatioLabel: 'Tokens de Salida Est.',
+      runsPerDayLabel: 'Ejecuciones / Día',
+      colSingleRun: 'Por Uso',
+      colMonthlyRun: 'Est. Mensual',
+      colFits: 'Límite Contexto',
+      fitsYes: 'Cabe',
+      fitsNo: 'Excede'
     },
     voice: {
       title: 'Calculadora de Costos de Voz IA y Doblaje',
@@ -896,10 +1088,12 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
   fr: {
     nav: {
       llmCalc: 'Calculateur API LLM',
+      tokenCounter: 'Compteur Tokens',
       voiceCalc: 'Coût Voix IA',
       gpuCalc: 'GPU vs API',
       stackCalc: 'Stack SaaS IA',
-      compare: 'Comparer Modèles'
+      compare: 'Comparer Modèles',
+      toggleTheme: 'Mode Sombre / Clair'
     },
     hero: {
       badge: 'Tarifs en Direct · Mis à Jour Chaque Jour',
@@ -947,7 +1141,37 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
       tierBudget: 'Économique',
       tierBalanced: 'Équilibré',
       tierFlagship: 'Flagship',
-      tierReasoning: 'Raisonnement'
+      tierReasoning: 'Raisonnement',
+      currencyLabel: 'Devise',
+      minContextLabel: 'Contexte Min.',
+      maxBudgetLabel: 'Budget Max/Mois',
+      anyContext: 'Tout Contexte',
+      anyBudget: 'Sans Limite',
+      exportCsv: 'Exporter CSV',
+      copyLink: 'Partager',
+      copiedLink: 'Copié !',
+      bestMatchTitle: 'Meilleur Choix'
+    },
+    tokenCounter: {
+      title: 'Compteur de Tokens IA & Estimateur de Coût Prompt',
+      subtitle: 'Collez un prompt, document ou code pour estimer les tokens et le coût API en direct sur 72+ modèles IA.',
+      privacyBadge: '100% Local dans le navigateur · Aucun texte envoyé sur nos serveurs',
+      sampleEn: 'Exemple : Prompt',
+      sampleZh: 'Exemple : Document',
+      sampleCode: 'Exemple : Code',
+      clearBtn: 'Effacer',
+      placeholder: 'Collez votre prompt, article, JSON ou code source ici...',
+      estTokens: 'Tokens Estimés',
+      charsLabel: 'Caractères',
+      wordsLabel: 'Mots',
+      cjkLabel: 'Caractères CJK',
+      outputRatioLabel: 'Tokens Sortie Prévus',
+      runsPerDayLabel: 'Appels / Jour',
+      colSingleRun: 'Par Appel',
+      colMonthlyRun: 'Est. Mensuel',
+      colFits: 'Contexte',
+      fitsYes: 'Compatible',
+      fitsNo: 'Dépasse'
     },
     voice: {
       title: 'Calculateur de Coût Voix IA & Doublage',

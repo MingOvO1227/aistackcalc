@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import TokenCounter from '../../../components/TokenCounter.astro';
+import AffiliateBanner from '../../../components/AffiliateBanner.astro';
+import { TRANSLATIONS, localePath, type Locale } from '../../../i18n/translations';
+
+export function getStaticPaths() {
+  return ['zh', 'ja', 'de', 'es', 'fr'].map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Locale;
+const t = TRANSLATIONS[lang].tokenCounter;
+---
+<BaseLayout
+  title={t.title}
+  description={t.subtitle}
+  locale={lang}
+  canonicalPath={localePath(lang, 'tools/token-counter/')}
+  multilingualPath="tools/token-counter/"
+>
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+    <TokenCounter locale={lang} />
+    <AffiliateBanner locale={lang} partnerKeys={['runpod', 'elevenlabs', 'webflow', 'zapier']} />
+  </div>
+</BaseLayout>

@@ -22,6 +22,7 @@ async function main() {
 
   const urlList = [
     `${base}/`,
+    `${base}/tools/token-counter/`,
     `${base}/tools/ai-voice-cost-calculator/`,
     `${base}/tools/gpu-vs-api-calculator/`,
     `${base}/tools/ai-saas-stack-calculator/`,

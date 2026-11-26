@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
   html {
@@ -7,7 +8,7 @@
   }
 
   body {
-    @apply bg-slate-50 text-slate-900 antialiased;
+    @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 antialiased transition-colors duration-200;
   }
 }
 
@@ -16,10 +17,23 @@
 }
 
 input[type="range"] {
-  accent-color: #4f46e5;
+  accent-color: #6366f1;
+}
+
+.dark input[type="range"] {
+  accent-color: #818cf8;
 }
 
 .hero-grid {
-  background-image: radial-gradient(rgba(79, 70, 229, 0.12) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99, 102, 241, 0.14), transparent 70%),
+    radial-gradient(rgba(79, 70, 229, 0.11) 1px, transparent 1px);
+  background-size: 100% 100%, 24px 24px;
+}
+
+.dark .hero-grid {
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99, 102, 241, 0.22), transparent 70%),
+    radial-gradient(rgba(129, 140, 248, 0.14) 1px, transparent 1px);
+  background-size: 100% 100%, 24px 24px;
 }
