@@ -125,6 +125,12 @@ export interface TranslationDict {
     homeCrumb: string;
     priceTieBadge: string;
     samePriceTag: string;
+    customTitle: string;
+    selectModelA: string;
+    selectModelB: string;
+    filterModelPlaceholder: string;
+    swapBtn: string;
+    popularPairsTitle: string;
   };
   modelDetail: {
     tierSuffix: string;
@@ -267,7 +273,13 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
       annualSavingsWith: 'Annual Savings with',
       homeCrumb: 'Home',
       priceTieBadge: 'Same Price · Identical Blended Rate',
-      samePriceTag: 'Same Price'
+      samePriceTag: 'Same Price',
+      customTitle: 'Compare Any Two AI Models Side-by-Side',
+      selectModelA: 'Model A',
+      selectModelB: 'Model B',
+      filterModelPlaceholder: 'Type to filter models (e.g. Claude, GPT, DeepSeek)...',
+      swapBtn: 'Swap',
+      popularPairsTitle: 'Popular Pre-Built Comparisons'
     },
     modelDetail: {
       tierSuffix: 'tier',
@@ -408,7 +420,13 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
       annualSavingsWith: '改用此模型预计每年可省：',
       homeCrumb: '首页',
       priceTieBadge: '定价持平 · 综合单价相同',
-      samePriceTag: '同价'
+      samePriceTag: '同价',
+      customTitle: '自由搜索并对比任意两款大模型',
+      selectModelA: '选择模型 A',
+      selectModelB: '选择模型 B',
+      filterModelPlaceholder: '输入关键词筛选模型（如 GPT、Claude、DeepSeek、Gemini）...',
+      swapBtn: '互换',
+      popularPairsTitle: '热门模型对比快捷入口'
     },
     modelDetail: {
       tierSuffix: '档位',
@@ -549,7 +567,13 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
       annualSavingsWith: '年間削減額目安：',
       homeCrumb: 'ホーム',
       priceTieBadge: '同額設定 · 平均単価が一致',
-      samePriceTag: '同価格'
+      samePriceTag: '同価格',
+      customTitle: '任意の2つのAIモデルを検索して直接比較',
+      selectModelA: 'モデル A',
+      selectModelB: 'モデル B',
+      filterModelPlaceholder: 'モデル名で検索（例: GPT, Claude, DeepSeek）...',
+      swapBtn: '入替',
+      popularPairsTitle: '人気の定番モデル比較'
     },
     modelDetail: {
       tierSuffix: 'クラス',
@@ -690,7 +714,13 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
       annualSavingsWith: 'Jährliche Ersparnis mit',
       homeCrumb: 'Startseite',
       priceTieBadge: 'Gleicher Preis · Identischer Tarif',
-      samePriceTag: 'Preisgleich'
+      samePriceTag: 'Preisgleich',
+      customTitle: 'Zwei beliebige KI-Modelle direkt vergleichen',
+      selectModelA: 'Modell A',
+      selectModelB: 'Modell B',
+      filterModelPlaceholder: 'Modelle filtern (z. B. GPT, Claude, DeepSeek)...',
+      swapBtn: 'Tauschen',
+      popularPairsTitle: 'Beliebte Direktvergleiche'
     },
     modelDetail: {
       tierSuffix: 'Klasse',
@@ -831,7 +861,13 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
       annualSavingsWith: 'Ahorro anual con',
       homeCrumb: 'Inicio',
       priceTieBadge: 'Mismo Precio · Tarifa Idéntica',
-      samePriceTag: 'Mismo Precio'
+      samePriceTag: 'Mismo Precio',
+      customTitle: 'Busca y compara dos modelos de IA al instante',
+      selectModelA: 'Modelo A',
+      selectModelB: 'Modelo B',
+      filterModelPlaceholder: 'Filtrar modelos (ej. GPT, Claude, DeepSeek)...',
+      swapBtn: 'Invertir',
+      popularPairsTitle: 'Comparativas Populares Predefinidas'
     },
     modelDetail: {
       tierSuffix: 'nivel',
@@ -972,7 +1008,13 @@ export const TRANSLATIONS: Record<Locale, TranslationDict> = {
       annualSavingsWith: 'Économies annuelles avec',
       homeCrumb: 'Accueil',
       priceTieBadge: 'Même Tarif · Prix Identique',
-      samePriceTag: 'Même Prix'
+      samePriceTag: 'Même Prix',
+      customTitle: 'Recherchez et comparez deux modèles IA librement',
+      selectModelA: 'Modèle A',
+      selectModelB: 'Modèle B',
+      filterModelPlaceholder: 'Filtrer les modèles (ex. GPT, Claude, DeepSeek)...',
+      swapBtn: 'Inverser',
+      popularPairsTitle: 'Comparatifs Populaires Prédéfinis'
     },
     modelDetail: {
       tierSuffix: 'gamme',
