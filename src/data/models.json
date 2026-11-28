@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-11-27T13:38:41.576Z",
+  "updatedAt": "2026-11-28T12:49:07.048Z",
   "source": "OpenRouter Public Pricing API",
-  "totalRawModels": 477,
+  "totalRawModels": 476,
   "models": [
     {
       "id": "google/gemini-4-neon",
@@ -347,8 +347,8 @@
       "provider": "DeepSeek",
       "openWeight": true,
       "inputPerM": 0.051,
-      "outputPerM": 0.203,
-      "blendedPerM": 0.089,
+      "outputPerM": 0.567,
+      "blendedPerM": 0.18,
       "contextLength": 1048576,
       "tier": "budget",
       "created": 1789021285,
@@ -458,9 +458,9 @@
       "providerKey": "deepseek",
       "provider": "DeepSeek",
       "openWeight": true,
-      "inputPerM": 0.857,
-      "outputPerM": 1.52,
-      "blendedPerM": 1.02,
+      "inputPerM": 0.89,
+      "outputPerM": 1.51,
+      "blendedPerM": 1.05,
       "contextLength": 1048576,
       "tier": "balanced",
       "created": 1777000679,
